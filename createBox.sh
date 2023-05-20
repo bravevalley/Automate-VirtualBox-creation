@@ -1,12 +1,14 @@
 #! /bin/bash
 
 
-# Here is the name of the virtual box to be created
+# Name of the virtual box to be created
 MACHINE_NAME=$1
 
 VBoxManage showvminfo $MACHINE_NAME > /dev/null
 
-if [ $? -eq 0 ]; then exit; fi
+if [ $? -eq 0 ]; then
+	echo -e "$MACHINE_NAME VIRTUALBOX EXISTS ALREADY";	
+	exit; fi
 
 set -xueo pipefail
 
@@ -23,4 +25,7 @@ VBoxManage modifyvm $MACHINE_NAME --memory 1024 --cpus=1 --graphicscontroller=vm
 VBoxManage modifyvm $MACHINE_NAME --nic1=natnetwork --nat-network1=ansibleNet
 
 
-
+# Create and Attach HD and ISO
+VBoxManage createhd --filename `pwd`/$MACHINE_NAME/"$MACHINE_NAME"_DISK.vdi --size 20000 --format VDI
+VBoxManage storagectl $MACHINE_NAME --name "SATA Controller" --add sata --controller IntelAhci
+VBoxManage storageattach $MACHINE_NAME --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium  `pwd`/$MACHINE_NAME/"$MACHINE_NAME"_DISK.vdi
