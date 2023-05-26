@@ -18,7 +18,7 @@ trap "echo Undoing $MACHINE_NAME; vboxmanage unregistervm --delete $MACHINE_NAME
 ISO=$2
 
 # Create the vm slot
-VBoxManage createvm --name $MACHINE_NAME --ostype "Fedora_64" --register
+VBoxManage createvm --name $MACHINE_NAME --ostype "Linux_64" --register
 
 # Modify vm slot with network and hardware components
 VBoxManage modifyvm $MACHINE_NAME --memory 1024 --cpus=1 --graphicscontroller=vmsvga 
